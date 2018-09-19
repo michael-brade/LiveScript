@@ -109,6 +109,7 @@ switch
   options = {
       filename
       output-filename: output-filename filename, o.json
+      output-dir: o.output
       o.bare
       o.const
       o.map

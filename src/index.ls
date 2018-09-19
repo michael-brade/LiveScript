@@ -45,14 +45,16 @@ exports <<<
               ast.make-return! if options.run and options.print
               output = ast.compile-root options
               if options.map and options.map isnt 'none'
-                  {filename, output-filename} = options
+                  {filename, output-filename, output-dir} = options
                   unless filename
                       filename = "unnamed-#{ Math.floor(Math.random! * 4294967296).to-string 16 }.ls"
 
-                  output.set-file path.basename filename
-                  result = output.to-string-with-source-map!
+                  dest-to-src = path.relative (if output-dir then that else path.dirname filename), filename
+
+                  output.set-file dest-to-src
+                  result = output.to-string-with-source-map { file: path.basename(output-filename || "") || "stdout" }
                   if options.map is 'embedded'
-                      result.map.set-source-content filename, code
+                      result.map.set-source-content dest-to-src, code
                   if options.map in <[ linked debug ]>
                       map-path = "#{path.basename output-filename}.map"
                       result.code += "\n//# sourceMappingURL=#map-path\n"
